@@ -1,0 +1,182 @@
+---
+layout: post
+title:  "Learning CSS Grid"
+date:   2017-10-01 16:43:18 +0100
+categories: learning
+excerpt: "This should be a custom exceerpt"
+---
+
+I tend to learn things better when I'm writing them down. I recently read [Explaining closures to myself](https://dev.to/damcosset/explaining-closures-telf) and found the idea of just writing blogposts about what you learn pretty good. Over the course of the weekend, I finally took a look at CSS Grids after I had it in mind pretty much since it was released.  
+You'll probably get a better understanding of the topic from other sources since
+this is pretty much written for my personal understanding, but anyways, here
+goes nothing.
+
+### The Grid Container
+To define a grid, we'll need a grid container in the first place. Let's assume
+we have the following strucutre in our html:
+
+```html
+<div class="gridContainer">
+  <div class="gridItem-A">A</div>
+  <div class="gridItem-B">B</div>
+  <div class="gridItem-C">C</div>
+</div>
+```
+
+In our CSS, we'd just need to set the `display` property to `grid`:
+
+```css
+.gridContainer {
+  display: grid;
+  width: 400px;
+  height: 600px;
+}
+```
+
+Since we have nothing further defined, all three children of the grid container will live in a distinct row and be a single column that's just as wide as the grid (basically, thats just the standard behavior of the block-level `div` elements).  
+
+Since we're using a grid layout here, we'd probably want to define rows and columns for that grid. To do that, we can use the two properties `grid-template-rows` and `grid-template-columns`. For both of those, we can just pass a number of different size that would than be a column or row each. So, if we wanted to have three rows and 4 columns in our grid, we'd just add that to our container:
+
+```css
+.gridContainer {
+  display: grid;
+  width: 400px;
+  height: 600px;
+  grid-template-rows: 200px 200px 200px;
+  grid-template-columns: 100px 100px 100px 100px;
+}
+```
+
+Here, we would end up with 3 rows that are 200px high each and for columns that are 100px wide each (we could also define differing values for every row or column, of course). There's two problems with our current declaration of the grid container:  
+1. If we were to change the width or height of the grid container, our columns and rows would not be a good fit anymore
+2. We have to repeat ourselfes multiple times to define those columns and rows of the same width
+
+Luckily, both of these problems can be solved easily.
+
+#### The `fr` unit
+With CSS Grid, we get a new, dynamic unit (beneath the known ones such as `%`, `em` or `rem`): `fr`. `fr` stands for fraction and it is exacly that: A fraction of the (remaining) with or height of the container. If we had three columns and we wanted one of them to be twice as wide as the other two, we would give that column a size of `2fr` while the other two would get a size of `1fr` (On a side note: If we give one of the columns a fixed width of `200px` and the other two a width of `1fr`, they would both get one fraction of the remaining width, after the `200px` are substracted fro the total width).  
+
+So, for our example, we could just write  
+
+```css
+.gridContainer {
+  display: grid;
+  width: 400px;
+  height: 600px;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+```
+
+This will keep our columns and rows at the same relative size, no matter to what we change the width or height of the container.
+
+#### The `repeat()` function
+With the first problem solved, we still need to write the same value for each new colum or row. Enter: the `repeat()` function. The `repeat()` function takes two arguments: A number and a size. So instead of wirting `1fr` three times for our row, we can use `repeat(3, 1fr)` with the same effect.  
+There also is a shorthand called `grid-template` which takes the sizes of both, the rows an columns, divided by a forward slash. Our new CSS could look like this:
+
+```css
+.gridContainer {
+  display: grid;
+  width: 400px;
+  height: 600px;
+  grid-template: repeat(3, 1fr) / repeat(4, 1fr);
+}
+```
+
+#### The Gap
+One last thing we probably want to configure for our grid container is the grid gap (the spacing beteween each column and each row). This is realised by the `grid-gap` property, which takes two values: The gap size for the rows and the gap size for the columns. Because it always takes a fixed number of values, we do not need a strange forward slash like for the `grid-template` shorthand.  
+Let's give our rows a gap of 40px and our columns a gap of 20px here:
+
+```css
+.gridContainer {
+  display: grid;
+  width: 400px;
+  height: 600px;
+  grid-template: repeat(3, 1fr) / repeat(4, 1fr);
+  grid-gap: 40px 20px;
+}
+```
+
+With this, we are done for the basic configuration of our grid container. Next up: The grid items.
+
+### The Grid Items
+Let's remember the HTML form the beginning of this article again:
+
+```html
+<div class="gridContainer">
+  <div class="gridItem-A">A</div>
+  <div class="gridItem-B">B</div>
+  <div class="gridItem-C">C</div>
+</div>
+```
+
+With our current grid container configuration, the three items would fill the first three columns of the first row. We're about to change that.  
+With these three items we could build the (very) basic structure of a site: we have a header, a sidebar and a content area, just like in the picture below (to be honest, this probably isn't the best example in the world, but I feel it's more intuitive than just placing the items all over the place for no reason):
+
+[PICUTRE MISSING]
+
+As a first step, lets rename the items to what they represent:
+
+```html
+<div class="gridContainer">
+  <div class="gridItem-Header">This is the header</div>
+  <div class="gridItem-Sidebar">I'm always just a side role</div>
+  <div class="gridItem-Content">Look at me!</div>
+</div>
+```
+
+#### Setting Areas of Grid Items
+To set the area of grid items, we can us four different funcitons: `grid-row-start` that sets the beginning row of an item, `grid-row-end` that defines the row a grid item should end in and `grid-column-start` and `grid-column-end` accordingly.  
+There's a catch here, though: The numbering of rows and columns starts at 1 and ends at one higher than the highest number. If we wanted our `gridItem-Header` element live in row 1 only and take the width of all four columns, the CSS would look something like the following:
+
+```css
+.gridItem-Header {
+  grid-row-start: 1;
+  grid-row-end: 2;
+  grid-column-start: 1;
+  grid-column-end: 5;
+}
+```
+
+For this, we can also use the shorthands `grid-row` and `grid-column`, which take the starting- and endpoint of the element. Also, since the counting is somewhat awkward, we can utilize `span`, which describes how many columns or rows an element should span over.  
+Using both of these utilities, we can rewrite our header like the following:
+
+```css
+.gridItem-Header {
+  grid-row: 1 / span 1;
+  grid-column: 1 / span 4;
+}
+```
+
+We can go even shorter than that with `grid-area`. As you may already have guessed, this property takes the starting- and endpoints for both, the column and row of the item. It takes its arguments in the order of `grid-row-start`, `grid-column-start`, `grid-row-end` and `grid-column-end` divided by forward slash's. The shortest version of our header and the other elements are:
+
+```css
+.gridItem-Header {
+  grid-area: 1 / 1 / span 1 / span 4;
+}
+
+.gridItem-Sidebar {
+  grid-area: 2 / 1 / span 3 / span 1;
+}
+
+.gridItem-Content {
+  grid-area: 2 / 2 / span 3 / span 3;
+}
+```
+
+Width this, we have our basic setup done using CSS Grid.
+
+Of course, these are only the very basics of CSS Grids. There are no nifty tricks or hot tips in here, but writing this down helped me to get the basics in my head and hopefully it helped someone out there as well. At the end of this article, I want to speak about some parts of CSS Grid I don't like to much as of now.
+
+I kind of feel like the order in which the values of `grid-area` are placed is odd. It would feel more natural to me to declare the values for the rows first and the columns after, just like with `grid-template`. Of course, the implemented order makes sense as well, but it just doesn't feel that good to me.
+
+Also, the numbering of the columns and rows is weird. I can see some sense in starting the numbering at 1, but ending at n + 1 leads to complications in clearly understanding where an item ends for me.
+
+### Browser Support
+
+
+### Further Resources
+* [MDN CSS Grid Layout docs](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout)
+* [A Complete Guide to Grid](https://css-tricks.com/snippets/css/complete-guide-grid/)
+* [Grid by Example](https://gridbyexample.com/examples/)
+* [Practical CSS Grid: Adding Grid to an Existing Design](https://alistapart.com/article/practical-grid)
