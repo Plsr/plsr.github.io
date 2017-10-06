@@ -6,7 +6,8 @@ categories: learning
 excerpt: "This should be a custom exceerpt"
 ---
 
-I tend to learn things better when I'm writing them down. I recently read [Explaining closures to myself](https://dev.to/damcosset/explaining-closures-telf) and found the idea of just writing blogposts about what you learn pretty good. Over the course of the weekend, I finally took a look at CSS Grids after I had it in mind pretty much since it was released.  
+I tend to learn things better when I'm writing them down. I recently read [Explaining closures to myself](https://dev.to/damcosset/explaining-closures-telf) and found the idea of just writing blogposts about what you learn pretty good.  
+Over the course of the weekend, I finally took a look at CSS Grids after I had it in mind pretty much since it was released.  
 You'll probably get a better understanding of the topic from other sources since
 this is pretty much written for my personal understanding, but anyways, here
 goes nothing.
@@ -33,9 +34,9 @@ In our CSS, we'd just need to set the `display` property to `grid`:
 }
 ```
 
-Since we have nothing further defined, all three children of the grid container will live in a distinct row and be a single column that's just as wide as the grid (basically, thats just the standard behavior of the block-level `div` elements).  
+Since we have nothing further defined, all three children of the grid container will live in a distinct row and be a single column that's just as wide as the grid. We can, however, notice that every row is the same size and the items already fill the height of that row.  
 
-Since we're using a grid layout here, we'd probably want to define rows and columns for that grid. To do that, we can use the two properties `grid-template-rows` and `grid-template-columns`. For both of those, we can just pass a number of different size that would than be a column or row each. So, if we wanted to have three rows and 4 columns in our grid, we'd just add that to our container:
+Since we're using a grid layout here, we'd probably want to define rows and columns for that grid. To do that, we can use the two properties `grid-template-rows` and `grid-template-columns`. For both of those, we can just pass a number of different size that would than be a column or row each. So, if we wanted to have three rows and four columns in our grid, we'd just add the following to our container:
 
 ```css
 .gridContainer {
@@ -113,7 +114,7 @@ Let's remember the HTML form the beginning of this article again:
 With our current grid container configuration, the three items would fill the first three columns of the first row. We're about to change that.  
 With these three items we could build the (very) basic structure of a site: we have a header, a sidebar and a content area, just like in the picture below (to be honest, this probably isn't the best example in the world, but I feel it's more intuitive than just placing the items all over the place for no reason):
 
-[PICUTRE MISSING]
+![Example Structure]({{ "/assets/images/articles/css-grid/page-structure.png" | absolute_url }})
 
 As a first step, lets rename the items to what they represent:
 
@@ -164,7 +165,7 @@ We can go even shorter than that with `grid-area`. As you may already have guess
 }
 ```
 
-Width this, we have our basic setup done using CSS Grid.
+With this, we have our basic setup done using CSS Grid.
 
 Of course, these are only the very basics of CSS Grids. There are no nifty tricks or hot tips in here, but writing this down helped me to get the basics in my head and hopefully it helped someone out there as well. At the end of this article, I want to speak about some parts of CSS Grid I don't like to much as of now.
 
@@ -173,7 +174,7 @@ I kind of feel like the order in which the values of `grid-area` are placed is o
 Also, the numbering of the columns and rows is weird. I can see some sense in starting the numbering at 1, but ending at n + 1 leads to complications in clearly understanding where an item ends for me.
 
 ### Browser Support
-
+According to [Can I use](http://caniuse.com/#search=grid), CSS Grid Layout is ready to go in most current browsers and needs to be prefixed for IE and Edge.
 
 ### Further Resources
 * [MDN CSS Grid Layout docs](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout)
